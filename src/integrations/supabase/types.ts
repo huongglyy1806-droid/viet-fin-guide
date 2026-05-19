@@ -14,7 +14,123 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      financial_profiles: {
+        Row: {
+          cash_liquid: number
+          emergency_fund: number
+          investment_horizon_years: number
+          monthly_debt_payment: number
+          monthly_expenses: number
+          monthly_income: number
+          total_assets: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cash_liquid?: number
+          emergency_fund?: number
+          investment_horizon_years?: number
+          monthly_debt_payment?: number
+          monthly_expenses?: number
+          monthly_income?: number
+          total_assets?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cash_liquid?: number
+          emergency_fund?: number
+          investment_horizon_years?: number
+          monthly_debt_payment?: number
+          monthly_expenses?: number
+          monthly_income?: number
+          total_assets?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      holdings: {
+        Row: {
+          amount: number
+          category: Database["public"]["Enums"]["asset_category"]
+          created_at: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          category: Database["public"]["Enums"]["asset_category"]
+          created_at?: string
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category?: Database["public"]["Enums"]["asset_category"]
+          created_at?: string
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      questionnaire_responses: {
+        Row: {
+          q1: number
+          q2: number
+          q3: number
+          q4: number
+          q5: number
+          q6: number
+          q7: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          q1: number
+          q2: number
+          q3: number
+          q4: number
+          q5: number
+          q6: number
+          q7: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          q1?: number
+          q2?: number
+          q3?: number
+          q4?: number
+          q5?: number
+          q6?: number
+          q7?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +139,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      asset_category: "cash" | "gold" | "stock" | "bond_fund"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +266,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      asset_category: ["cash", "gold", "stock", "bond_fund"],
+    },
   },
 } as const
