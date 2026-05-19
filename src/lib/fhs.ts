@@ -107,18 +107,15 @@ export type RiskResult = {
 };
 
 export function computeRisk(p: FinancialProfile, q: Questionnaire, fhs: FHSResult): RiskResult {
-  const FC = fhs.FHS - (penaltyDTI(fhs.DTI) * -1 + penaltyEFS(fhs.EFS) * -1) * -1 + horizonBonus(p.investment_horizon_years);
-  // Simpler: FC = FHS - (|penaltyDTI| + |penaltyEFS|) + bonus  (penalties are stored negative)
-  const FC_clean = fhs.FHS + penaltyDTI(fhs.DTI) + penaltyEFS(fhs.EFS) + horizonBonus(p.investment_horizon_years);
+  // Penalties returned as negative numbers, so adding them subtracts magnitude.
+  const FC = fhs.FHS + penaltyDTI(fhs.DTI) + penaltyEFS(fhs.EFS) + horizonBonus(p.investment_horizon_years);
 
-  // RT normalized: actual total (sum of 1-5 answers) → ((total-7)/28)*100
+  // RT normalized: total of 7 answers (1..5) → ((total-7)/28)*100
   const total = q.q1 + q.q2 + q.q3 + q.q4 + q.q5 + q.q6 + q.q7;
   const RT_normalized = ((total - 7) / (35 - 7)) * 100;
 
-  // Weighted RT contribution (the spec also defines question weights; preserve them for transparency)
-  // We use the normalized RT per spec for the Weighted formula.
-  const Weighted = FC_clean * 0.6 + RT_normalized * 0.4;
-  const HardCap = Math.min(Weighted, FC_clean + 10);
+  const Weighted = FC * 0.6 + RT_normalized * 0.4;
+  const HardCap = Math.min(Weighted, FC + 10);
   const RiskCapacity = Math.min(Weighted, HardCap);
 
   let profile = "Very Conservative";
@@ -127,9 +124,12 @@ export function computeRisk(p: FinancialProfile, q: Questionnaire, fhs: FHSResul
   else if (RiskCapacity >= 35) profile = "Balanced";
   else if (RiskCapacity >= 20) profile = "Conservative";
 
-  void FC; // silence unused
-  return { FC: FC_clean, RT: RT_normalized, Weighted, RiskCapacity, profile };
+  return { FC, RT: RT_normalized, Weighted, RiskCapacity, profile };
 }
+
+// Q_WEIGHTS kept for future per-question weighted reporting (currently RT uses normalized total per spec).
+export { Q_WEIGHTS, SCORE_TO_PCT };
+
 
 // ---------- Layer 3: Allocation ----------
 export type Allocation = { stock: number; bond_fund: number; gold: number; cash: number; objective: string };
