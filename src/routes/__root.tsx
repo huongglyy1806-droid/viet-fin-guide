@@ -45,7 +45,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Tài Mệnh — AI Financial Portfolio for Vietnam" },
+      { title: "Aurum — AI Financial Portfolio for Vietnam" },
       { name: "description", content: "Premium AI-powered personal finance and investment portfolio management for the Vietnamese market." },
     ],
     links: [
