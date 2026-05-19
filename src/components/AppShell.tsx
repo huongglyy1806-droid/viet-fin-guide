@@ -21,7 +21,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Link to="/" className="flex items-center gap-2">
             <span className="inline-block w-8 h-8 rounded-full bg-gradient-to-br from-[oklch(0.88_0.08_85)] to-[oklch(0.72_0.14_85)] shadow-[0_0_20px_oklch(0.82_0.13_85/0.5)]" />
             <span className="font-display text-xl tracking-wide">
-              Tài <span className="gold-text">Mệnh</span>
+              <span className="gold-text">Aurum</span>
             </span>
           </Link>
           {user && (
@@ -61,7 +61,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </header>
       <main className="mx-auto max-w-7xl px-6 py-10">{children}</main>
       <footer className="mx-auto max-w-7xl px-6 py-10 text-xs text-muted-foreground border-t border-border/40 mt-12">
-        Tài Mệnh — AI Financial Portfolio Management for Vietnam. Built on the FHS, Risk Capacity, and AI Allocation framework.
+        Aurum — AI Financial Portfolio Management for Vietnam. Built on the FHS, Risk Capacity, and AI Allocation framework.
       </footer>
     </div>
   );

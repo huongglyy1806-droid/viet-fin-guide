@@ -18,23 +18,23 @@ function Landing() {
             AI Portfolio · Vietnam
           </span>
           <h1 className="font-display text-5xl md:text-6xl leading-[1.05]">
-            Quản lý <span className="gold-text">tài sản</span> như một
+            Manage <span className="gold-text">wealth</span> like a
             <br /> private bank.
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-xl">
-            Tài Mệnh đánh giá sức khỏe tài chính, khả năng chấp nhận rủi ro và đề
-            xuất phân bổ danh mục đầu tư tối ưu theo mô hình FHS — được thiết kế
-            riêng cho hành vi tài chính Việt Nam.
+            Aurum evaluates your financial health, risk capacity, and recommends
+            an optimal portfolio allocation through the FHS model — designed
+            specifically for Vietnamese investor behavior.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/signup" className="btn-gold">Bắt đầu miễn phí</Link>
-            <Link to="/login" className="btn-ghost">Đăng nhập</Link>
+            <Link to="/signup" className="btn-gold">Get started free</Link>
+            <Link to="/login" className="btn-ghost">Sign in</Link>
           </div>
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-md">
             {[
-              ["FHS", "Sức khỏe tài chính"],
-              ["RC", "Khả năng rủi ro"],
-              ["AI", "Phân bổ tối ưu"],
+              ["FHS", "Financial Health"],
+              ["RC", "Risk Capacity"],
+              ["AI", "Optimal Allocation"],
             ].map(([k, v]) => (
               <div key={k} className="stat-card text-center">
                 <div className="font-display text-2xl gold-text">{k}</div>

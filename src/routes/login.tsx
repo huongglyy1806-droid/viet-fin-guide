@@ -25,7 +25,7 @@ function LoginPage() {
     <AppShell>
       <div className="max-w-md mx-auto lux-card p-10 mt-10">
         <h1 className="font-display text-3xl">Welcome back</h1>
-        <p className="text-sm text-muted-foreground mt-1">Sign in to your Tài Mệnh account.</p>
+        <p className="text-sm text-muted-foreground mt-1">Sign in to your Aurum account.</p>
         <form onSubmit={submit} className="mt-8 space-y-5">
           <div>
             <label className="lux-label">Email</label>
