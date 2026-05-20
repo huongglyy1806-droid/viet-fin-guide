@@ -14,6 +14,103 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_forecasts: {
+        Row: {
+          change_pct: number
+          confidence: number
+          current_price: number
+          forecast_path: Json
+          generated_at: string
+          horizon_days: number
+          id: string
+          predicted_price: number
+          signal: string
+          ticker: string
+        }
+        Insert: {
+          change_pct: number
+          confidence: number
+          current_price: number
+          forecast_path: Json
+          generated_at?: string
+          horizon_days?: number
+          id?: string
+          predicted_price: number
+          signal: string
+          ticker: string
+        }
+        Update: {
+          change_pct?: number
+          confidence?: number
+          current_price?: number
+          forecast_path?: Json
+          generated_at?: string
+          horizon_days?: number
+          id?: string
+          predicted_price?: number
+          signal?: string
+          ticker?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_forecasts_ticker_fkey"
+            columns: ["ticker"]
+            isOneToOne: false
+            referencedRelation: "stocks"
+            referencedColumns: ["ticker"]
+          },
+        ]
+      }
+      ai_metrics: {
+        Row: {
+          alpha: number | null
+          buyhold_return: number | null
+          direction_accuracy: number | null
+          generated_at: string
+          mae: number | null
+          mape: number | null
+          max_drawdown: number | null
+          rmse: number | null
+          sharpe: number | null
+          strategy_return: number | null
+          ticker: string
+        }
+        Insert: {
+          alpha?: number | null
+          buyhold_return?: number | null
+          direction_accuracy?: number | null
+          generated_at?: string
+          mae?: number | null
+          mape?: number | null
+          max_drawdown?: number | null
+          rmse?: number | null
+          sharpe?: number | null
+          strategy_return?: number | null
+          ticker: string
+        }
+        Update: {
+          alpha?: number | null
+          buyhold_return?: number | null
+          direction_accuracy?: number | null
+          generated_at?: string
+          mae?: number | null
+          mape?: number | null
+          max_drawdown?: number | null
+          rmse?: number | null
+          sharpe?: number | null
+          strategy_return?: number | null
+          ticker?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_metrics_ticker_fkey"
+            columns: ["ticker"]
+            isOneToOne: true
+            referencedRelation: "stocks"
+            referencedColumns: ["ticker"]
+          },
+        ]
+      }
       financial_profiles: {
         Row: {
           cash_liquid: number
@@ -49,6 +146,53 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      historical_prices: {
+        Row: {
+          close: number
+          date: string
+          ema20: number | null
+          high: number
+          low: number
+          open: number
+          price_smoothed: number | null
+          rsi: number | null
+          ticker: string
+          volume: number
+        }
+        Insert: {
+          close: number
+          date: string
+          ema20?: number | null
+          high: number
+          low: number
+          open: number
+          price_smoothed?: number | null
+          rsi?: number | null
+          ticker: string
+          volume?: number
+        }
+        Update: {
+          close?: number
+          date?: string
+          ema20?: number | null
+          high?: number
+          low?: number
+          open?: number
+          price_smoothed?: number | null
+          rsi?: number | null
+          ticker?: string
+          volume?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historical_prices_ticker_fkey"
+            columns: ["ticker"]
+            isOneToOne: false
+            referencedRelation: "stocks"
+            referencedColumns: ["ticker"]
+          },
+        ]
       }
       holdings: {
         Row: {
@@ -131,6 +275,101 @@ export type Database = {
         }
         Relationships: []
       }
+      stocks: {
+        Row: {
+          exchange: string
+          name: string
+          sector: string
+          ticker: string
+        }
+        Insert: {
+          exchange?: string
+          name: string
+          sector: string
+          ticker: string
+        }
+        Update: {
+          exchange?: string
+          name?: string
+          sector?: string
+          ticker?: string
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          fee: number
+          id: string
+          notes: string | null
+          price: number
+          quantity: number
+          side: Database["public"]["Enums"]["trade_side"]
+          tax: number
+          ticker: string
+          traded_at: string
+          user_id: string
+        }
+        Insert: {
+          fee?: number
+          id?: string
+          notes?: string | null
+          price: number
+          quantity: number
+          side: Database["public"]["Enums"]["trade_side"]
+          tax?: number
+          ticker: string
+          traded_at?: string
+          user_id: string
+        }
+        Update: {
+          fee?: number
+          id?: string
+          notes?: string | null
+          price?: number
+          quantity?: number
+          side?: Database["public"]["Enums"]["trade_side"]
+          tax?: number
+          ticker?: string
+          traded_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      xai_explanations: {
+        Row: {
+          feature: string
+          generated_at: string
+          id: string
+          importance: number
+          method: string
+          ticker: string
+        }
+        Insert: {
+          feature: string
+          generated_at?: string
+          id?: string
+          importance: number
+          method: string
+          ticker: string
+        }
+        Update: {
+          feature?: string
+          generated_at?: string
+          id?: string
+          importance?: number
+          method?: string
+          ticker?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "xai_explanations_ticker_fkey"
+            columns: ["ticker"]
+            isOneToOne: false
+            referencedRelation: "stocks"
+            referencedColumns: ["ticker"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -140,6 +379,7 @@ export type Database = {
     }
     Enums: {
       asset_category: "cash" | "gold" | "stock" | "bond_fund"
+      trade_side: "buy" | "sell"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -268,6 +508,7 @@ export const Constants = {
   public: {
     Enums: {
       asset_category: ["cash", "gold", "stock", "bond_fund"],
+      trade_side: ["buy", "sell"],
     },
   },
 } as const
