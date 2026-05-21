@@ -4,9 +4,12 @@ import { useAuth } from "@/hooks/use-auth";
 
 const NAV = [
   { to: "/dashboard", label: "Dashboard" },
-  { to: "/profile", label: "Financial Profile" },
+  { to: "/profile", label: "Profile" },
   { to: "/questionnaire", label: "Risk Survey" },
   { to: "/portfolio", label: "Portfolio" },
+  { to: "/transactions", label: "Transactions" },
+  { to: "/ai-forecast", label: "AI Forecast" },
+  { to: "/analytics", label: "Analytics" },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
