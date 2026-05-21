@@ -16,6 +16,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AiForecastRouteImport } from './routes/ai-forecast'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -54,6 +55,11 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AiForecastRoute = AiForecastRouteImport.update({
   id: '/ai-forecast',
   path: '/ai-forecast',
@@ -68,6 +74,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ai-forecast': typeof AiForecastRoute
+  '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/portfolio': typeof PortfolioRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ai-forecast': typeof AiForecastRoute
+  '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/portfolio': typeof PortfolioRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ai-forecast': typeof AiForecastRoute
+  '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/portfolio': typeof PortfolioRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/ai-forecast'
+    | '/analytics'
     | '/dashboard'
     | '/login'
     | '/portfolio'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/ai-forecast'
+    | '/analytics'
     | '/dashboard'
     | '/login'
     | '/portfolio'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/ai-forecast'
+    | '/analytics'
     | '/dashboard'
     | '/login'
     | '/portfolio'
@@ -138,6 +150,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AiForecastRoute: typeof AiForecastRoute
+  AnalyticsRoute: typeof AnalyticsRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   PortfolioRoute: typeof PortfolioRoute
@@ -198,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ai-forecast': {
       id: '/ai-forecast'
       path: '/ai-forecast'
@@ -218,6 +238,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AiForecastRoute: AiForecastRoute,
+  AnalyticsRoute: AnalyticsRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   PortfolioRoute: PortfolioRoute,
