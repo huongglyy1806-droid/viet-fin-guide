@@ -153,7 +153,7 @@ function AIForecastPage() {
           <h1 className="font-display text-4xl">AI <span className="gold-text">Stock Forecast</span></h1>
           <p className="text-muted-foreground mt-2">7-day price predictions, model performance, and SHAP/LIME explainability for 30 Vietnamese tickers.</p>
         </div>
-        <div className="text-xs text-muted-foreground">Pipeline: ARIMA trend + Ridge sliding-window (Bi-LSTM drop-in) · Walk-forward · Permutation XAI</div>
+        <div className="text-xs text-muted-foreground">Pipeline: ARIMA trend (train-window only) + Ridge regression over 20-day sliding windows · Walk-forward validation · Permutation-based feature importance (SHAP/LIME proxy). Synthetic OHLCV data; no look-ahead leakage.</div>
       </div>
 
       <div className="mt-3 lux-card p-4 text-xs text-[var(--warning)] border-[var(--warning)]/40">

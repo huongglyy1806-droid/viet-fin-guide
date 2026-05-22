@@ -1,15 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
+import { OnboardingProgress } from "@/components/OnboardingProgress";
 import { useAuth } from "@/hooks/use-auth";
+import { Q_WEIGHTS, SCORE_TO_PCT, computeRT, type Questionnaire } from "@/lib/fhs";
 
 export const Route = createFileRoute("/questionnaire")({ component: QPage });
 
-type Q = { id: keyof Answers; title: string; section: string; options: string[] };
-type Answers = { q1: number; q2: number; q3: number; q4: number; q5: number; q6: number; q7: number };
+type Q = { id: keyof Questionnaire; title: string; section: string; options: string[] };
 
-// Options are written so index 0 = score 5 (most aggressive), index 4 = score 1
+// Index 0 = score 5 (most aggressive), index 4 = score 1
 const QUESTIONS: Q[] = [
   { id: "q1", section: "Time horizon", title: "What is your current age?",
     options: ["Less than 45", "45 to 55", "56 to 65", "66 to 75", "Older than 75"] },
@@ -30,7 +31,7 @@ const QUESTIONS: Q[] = [
 function QPage() {
   const { user, loading: authLoading } = useAuth();
   const nav = useNavigate();
-  const [ans, setAns] = useState<Answers>({ q1: 3, q2: 3, q3: 3, q4: 3, q5: 3, q6: 3, q7: 3 });
+  const [ans, setAns] = useState<Questionnaire>({ q1: 3, q2: 3, q3: 3, q4: 3, q5: 3, q6: 3, q7: 3 });
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -42,6 +43,9 @@ function QPage() {
       if (data) setAns({ q1: data.q1, q2: data.q2, q3: data.q3, q4: data.q4, q5: data.q5, q6: data.q6, q7: data.q7 });
     })();
   }, [user, authLoading, nav]);
+
+  // [FIX] Live weighted RT preview using Q_WEIGHTS × SCORE_TO_PCT
+  const liveRT = useMemo(() => computeRT(ans), [ans]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -58,31 +62,50 @@ function QPage() {
   return (
     <AppShell>
       <div className="max-w-3xl mx-auto">
-        <h1 className="font-display text-4xl">Risk <span className="gold-text">Survey</span></h1>
-        <p className="text-muted-foreground mt-2">Seven questions. Used to compute your Risk Tolerance score.</p>
+        <OnboardingProgress current={2} />
+        <div className="flex items-end justify-between flex-wrap gap-4">
+          <div>
+            <h1 className="font-display text-4xl">Risk <span className="gold-text">Survey</span></h1>
+            <p className="text-muted-foreground mt-2">Seven weighted questions. Used to compute your Risk Tolerance score.</p>
+          </div>
+          <div className="lux-card px-5 py-3 text-right">
+            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Live RT preview</div>
+            <div className="font-display text-2xl gold-text">{liveRT.toFixed(1)} <span className="text-sm text-muted-foreground">/ 100</span></div>
+          </div>
+        </div>
+
         <form onSubmit={submit} className="mt-8 space-y-5">
-          {QUESTIONS.map((q, idx) => (
-            <div key={q.id} className="lux-card p-6">
-              <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold)]">{q.section} · Q{idx + 1}</div>
-              <h3 className="font-display text-xl mt-1">{q.title}</h3>
-              <div className="mt-4 space-y-2">
-                {q.options.map((opt, i) => {
-                  const score = 5 - i;
-                  const checked = ans[q.id] === score;
-                  return (
-                    <label key={i} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${
-                      checked ? "border-[var(--gold)] bg-[var(--gold)]/10" : "border-border hover:bg-accent"
-                    }`}>
-                      <input type="radio" className="accent-[var(--gold)]" name={q.id} checked={checked}
-                        onChange={() => setAns((a) => ({ ...a, [q.id]: score }))} />
-                      <span className="text-sm flex-1">{opt}</span>
-                      <span className="text-xs text-muted-foreground">score {score}</span>
-                    </label>
-                  );
-                })}
+          {QUESTIONS.map((q, idx) => {
+            const w = Q_WEIGHTS[q.id];
+            return (
+              <div key={q.id} className="lux-card p-6">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold)]">{q.section} · Q{idx + 1}</div>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full border border-[var(--gold)]/40 text-[var(--gold)]">
+                    weight {(w * 100).toFixed(0)}%
+                  </span>
+                </div>
+                <h3 className="font-display text-xl mt-1">{q.title}</h3>
+                <div className="mt-4 space-y-2">
+                  {q.options.map((opt, i) => {
+                    const score = 5 - i;
+                    const contribution = w * SCORE_TO_PCT[score];
+                    const checked = ans[q.id] === score;
+                    return (
+                      <label key={i} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${
+                        checked ? "border-[var(--gold)] bg-[var(--gold)]/10" : "border-border hover:bg-accent"
+                      }`}>
+                        <input type="radio" className="accent-[var(--gold)]" name={q.id} checked={checked}
+                          onChange={() => setAns((a) => ({ ...a, [q.id]: score }))} />
+                        <span className="text-sm flex-1">{opt}</span>
+                        <span className="text-xs text-muted-foreground tabular-nums">{contribution.toFixed(1)} pts</span>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           {msg && <div className="text-sm text-[var(--danger)]">{msg}</div>}
           <div className="flex justify-end">
             <button disabled={saving} className="btn-gold">{saving ? "Submitting..." : "Submit & view dashboard"}</button>
