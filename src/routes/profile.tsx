@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
+import { OnboardingProgress } from "@/components/OnboardingProgress";
 import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/profile")({ component: ProfilePage });
@@ -82,6 +83,7 @@ function ProfilePage() {
   return (
     <AppShell>
       <div className="max-w-4xl mx-auto">
+        <OnboardingProgress current={1} />
         <h1 className="font-display text-4xl">Financial <span className="gold-text">Profile</span></h1>
         <p className="text-muted-foreground mt-2 max-w-xl">
           Inputs feed directly into your Financial Health Score and AI portfolio recommendation. All amounts in Vietnamese Dong.
