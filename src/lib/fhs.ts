@@ -212,7 +212,7 @@ export function computeFHS(p: FinancialProfile): FHSResult {
   const income = p.monthly_income || 0;
   const SR       = income > 0 ? ((income - p.monthly_expenses) / income) * 100 : 0;
   const DTI      = income > 0 ? (p.monthly_debt_payment / income) * 100 : 0;
-  const EFS      = p.monthly_expenses > 0 ? p.cash_liquid / p.monthly_expenses : 0;
+  const EFS      = p.monthly_expenses > 0 ? p.emergency_fund / p.monthly_expenses : 0;
   const annual   = income * 12;
   const AssetRatio = annual > 0 ? p.total_assets / annual : 0;
 
